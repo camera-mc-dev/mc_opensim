@@ -1,32 +1,49 @@
-"""segment_agnles_diff.py
+"""check_data_pairs
 
-Script to generate segment orientation results and plots.
-These results were not used in BioCV paper 2, partly due
-to noise in results from precision errors and noisey decomp
- (this could be fixed), and partly due to space contraints.
+Tool to visualise pairs of markerless and marker-based data. 
+Can be used to check quality of data in each trial.
 """
 import os
 import numpy as np
 import pandas as pd
 
-from paper2_scripts.loader_utils import data_loader, update_data
-from paper2_scripts.plot_utils import orientation_plot
+from ... import data_loader, update_data
+# from mc_opensim.utils.loader_utils import data_loader, update_data
+from paper2_scripts.plot_utils import plot_temp_data, plot_temp_lumbar_data
 from paper2_scripts.data_utils import DataStruct
 
+
+def check_data_pairs(data):
+
+    reprocessing_list = []
+
+    print(
+        "\n\n[INFO] - Press any key for good trial and click mouse for bad trial...\n\n"
+    )
+
+    for col in data["markers"]["hip_flex"].columns:
+        print(f"Checking: {col}")
+        # check = plot_temp_data(data, col)
+        check = plot_temp_data(data, col)
+        if check is not None:
+            reprocessing_list.append(check)
+
+    return reprocessing_list
+
+
 # set data paths
-data_path = "/home/ln424/Documents/CAMERA/BioCV_Project/markerless_data/2020-03-05-P17/"
+data_path = "/home/ln424/Documents/CAMERA/BioCV_Project/markerless_data/2020-02-10-P06"
 
 # create a data structure to work with each data source
-jump_data = DataStruct().segment_ang_template
-walk_data = DataStruct().segment_ang_template
-run_data = DataStruct().segment_ang_template
+jump_data = DataStruct().joint_ang_template
+walk_data = DataStruct().joint_ang_template
+run_data = DataStruct().joint_ang_template
+
 
 # walk through data_path sub dirs and extract data
 for root, dirs, files in os.walk(data_path):
     for file in files:
-        if file.endswith("openSimRots_markerless.csv") or file.endswith(
-            "openSimRots_markers.csv"
-        ):
+        if file.endswith("markers.mot") or file.endswith("markerless.mot"):
             # check we haven't loaded a hop trial and if so skip it
             if "HOP" in root:
                 continue
@@ -69,27 +86,26 @@ for root, dirs, files in os.walk(data_path):
             except Exception as e:
                 print(f"[Warning] - Failed: {e}")
 
-# plot torso
-orientation_plot(jump_data, "torso", "CMJ", "Torso")
-orientation_plot(walk_data, "torso", "WALK", "Torso")
-orientation_plot(run_data, "torso", "RUN", "Torso")
 
-# plot pelvis
-orientation_plot(jump_data, "pelvis", "CMJ", "pelvis")
-orientation_plot(walk_data, "pelvis", "WALK", "pelvis")
-orientation_plot(run_data, "pelvis", "RUN", "pelvis")
+# Check jump data
+jump_reprocess = check_data_pairs(jump_data)
+print("Jump Data:")
+for f in sorted(jump_reprocess):
+    print(f"dump - {f}")
 
-# plot femur
-orientation_plot(jump_data, "femur", "CMJ", "femur")
-orientation_plot(walk_data, "femur", "WALK", "femur")
-orientation_plot(run_data, "femur", "RUN", "femur")
+# Check walk data
+walk_reprocess = check_data_pairs(walk_data)
+print("Walk Data:")
+for f in sorted(walk_reprocess):
+    print(f"dump - {f}")
 
-# plot tibia
-orientation_plot(jump_data, "tibia", "CMJ", "tibia")
-orientation_plot(walk_data, "tibia", "WALK", "tibia")
-orientation_plot(run_data, "tibia", "RUN", "tibia")
+# Check run data
+run_reprocess = check_data_pairs(run_data)
+print("Run Data:")
+for f in sorted(run_reprocess):
+    print(f"dump - {f}")
 
-# plot calcn
-orientation_plot(jump_data, "calcn", "CMJ", "calcn")
-orientation_plot(walk_data, "calcn", "WALK", "calcn")
-orientation_plot(run_data, "calcn", "RUN", "calcn")
+# final_list = sorted(jump_reprocess + walk_reprocess + run_reprocess)
+# final_list = sorted(walk_data             )
+# for f in final_list:
+#     print(f)

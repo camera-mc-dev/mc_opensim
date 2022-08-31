@@ -14,3 +14,5 @@ ROTATE_LCS = True
 ROTATE_X = -90
 ROTATE_Y = 0
 ROTATE_Z = -90
+
+RUN_IK = True
