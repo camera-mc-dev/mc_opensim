@@ -69,11 +69,11 @@ def fix_trc(filename: str, find="nan", replace=0, fix_units=True, unit="mm") -> 
        by incorrect unit scaling or having '0' instead of nans
 
     Args:
-        filename (str): _description_
-        find (str, optional): _description_. Defaults to "nan".
-        replace (int, optional): _description_. Defaults to 0.
-        fix_units (bool, optional): _description_. Defaults to True.
-        unit (str, optional): _description_. Defaults to "mm".
+        filename (str): full path to trc file
+        find (str, optional): string element to search for. Defaults to "nan".
+        replace (int, optional): Value to replace 'find' result with. Defaults to 0.
+        fix_units (bool, optional): Write units to trc headers? Defaults to True.
+        unit (str, optional): Units to be written. Defaults to "mm".
     """
     # open file and read lines
     infi = open(filename)

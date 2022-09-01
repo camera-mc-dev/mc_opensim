@@ -31,11 +31,6 @@ CUSTOM_IK_SETTINGS_PATH = None
 # TRC GENERATION SETTINGS
 #
 
-# Set to True if we want to search for .c3d files and convert them
-# to an OpenSim .trc format. If set to false we will assume that
-# .trc files already exist and search for those instead of .c3ds.
-CONVERT_C3D = True
-
 # We can attempt to validate the .trc files that we create and if
 # they fail, attempt to fix them. However, this will increase 
 # processing time.
