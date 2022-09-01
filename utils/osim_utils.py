@@ -1,3 +1,8 @@
+import os
+import lxml.etree as ET
+import subprocess
+import glob
+
 def _get_root(path):
     return os.path.dirname(os.path.dirname(path.replace("/op-fused", "")))
 
@@ -13,30 +18,30 @@ def _update_current_part(path):
     idx = path.rfind("P")
     return path[idx:idx+3]
 
-def generate_ik_settings(path):
+def generate_ik_settings(path: str, config: object) -> str:
 
-    # check if we are processing marker or 
-    # markerless data - dtype==True means we 
-    # are working with markerless data
-    filename, dtype = _check_dtype(path)
-    p_no = _update_current_part(path)
-    
     # generate paths for xml file
     marker_file = path
     output_motion_file = os.path.join(path.replace(".trc", ".mot"))
-    if dtype:
-        model_file = os.path.join(_get_root(path), "biocv_fullbody_markerless_scaled.osim")
+    
+    # We need to find the scaled osim model that is associtated with this
+    # motion trial. However, there could be several if a number of static
+    # trials have been collected.
+    if config.IS_MARKERLESS:
+        model_file = os.path.join(config.DEFAULT_MODELS_PATH, "biocv_fullbody_markerless_scaled.osim")
     else:
-        model_file = os.path.join(_get_root(path), "biocv_fullbody_markers_scaled.osim")
-
+        # if we are dealing with marker based data i.e. from QTM
+        # we'll assume (for now) that there is a static model in the
+        # dir as the one that out current file resides in.
+        model_file = [os.path.join(path, f) for f in os.listdir(os.path.dirname(path)) if config.STATIC_NAME in f and f.endswith("biocv_fullbody_markerless_scaled.osim")][0]
+        if not model_file:
+            raise FileNotFoundError()
     # load generic ik setting
-    xml_path = _get_root(os.path.dirname(path))
-    if dtype:
-        xml_path = os.path.join(xml_path, "ik_markerless.xml")
-        tree = ET.parse(xml_path)
+    if config.IS_MARKERLESS:
+        xml_path = os.path.join(config.DEFAULT_MODELS_PATH, "ik_markerless.xml")
     else:
-        xml_path = os.path.join(xml_path, "ik_markers.xml")
-        tree = ET.parse(xml_path)
+        xml_path = os.path.join(config.DEFAULT_MODELS_PATH, "ik_markers.xml")
+    tree = ET.parse(xml_path)
     
     # update xml settings for the current trial
     xml_root = tree.getroot()
@@ -52,33 +57,26 @@ def generate_ik_settings(path):
     
     return xml_path
 
-def generate_scale_settings(path):
-    
-    # check if we are processing marker or 
-    # markerless data - dtype==True means we 
-    # are working with markerless data
-    filename, dtype = _check_dtype(path)
-    p_no = _update_current_part(path)
+def generate_scale_settings(path: str, config: object) -> str:
 
     # generate paths for xml file
-    if dtype:
-        trc_file = os.path.join(os.path.dirname(path.replace("/op-fused", "")), f"{p_no}_STATIC_01", f"{p_no}_static_op.trc")
-        model_name = f"biocv_fullbody_op_{p_no}_scaled"
-        model_file = os.path.join(_get_root(path), "biocv_fullbody_op.osim")
-        output_model_file = os.path.join(os.path.dirname(path.replace("/op-fused", "")), f"biocv_fullbody_markerless_scaled.osim")
+    trc_file = path
+    if config.IS_MARKERLESS:
+        model_name = f"biocv_fullbody_op_scaled"
+        model_file = os.path.join(config.DEFAULT_MODELS_PATH, "biocv_fullbody_op.osim")
+        output_model_file = path.replace(".trc", "_biocv_fullbody_markerless_scaled.osim")
     else:
-        trc_file = os.path.join(os.path.dirname(path.replace("/op-fused", "")), f"{p_no}_STATIC_01", "markers.trc")
-        model_name = f"biocv_fullbody_markers_{p_no}_scaled"
-        model_file = os.path.join(_get_root(path), "biocv_fullbody_markers.osim")
-        output_model_file = os.path.join(os.path.dirname(path.replace("/op-fused", "")), "biocv_fullbody_markers_scaled.osim")
+        model_name = f"biocv_fullbody_markers_scaled"
+        model_file = os.path.join(config.DEFAULT_MODELS_PATH, "biocv_fullbody_markers.osim")
+        output_model_file = path.replace(".trc", "_biocv_fullbody_markers_scaled.osim")
 
     # load generic scaling settings
-    if dtype:
-        xml_path = os.path.join(_get_root(path), "scale_op.xml")
+    if config.IS_MARKERLESS:
+        xml_path = os.path.join(config.DEFAULT_MODELS_PATH, "scale_op.xml")
     else:
-        xml_path = os.path.join(_get_root(path), "scale_markers.xml") 
+        xml_path = os.path.join(config.DEFAULT_MODELS_PATH, "scale_markers.xml")
     tree = ET.parse(xml_path)
-    
+
     # update xml settings for the current trial
     xml_root = tree.getroot()
     for elem in xml_root.iter('marker_file'):
@@ -95,13 +93,13 @@ def generate_scale_settings(path):
     
     return xml_path
 
-def run_osim_tools(path, job="ik"):
+def run_osim_tools(path: str, config: object, job="ik") -> None:
     if job == "ik":
         # generate xml ik settings file for this trial
-        setup_file_path = generate_ik_settings(path)
+        setup_file_path = generate_ik_settings(path, config)
     elif job == "scale":
-        # generate xml sclaing settings file for this trial
-        setup_file_path = generate_scale_settings(path)
+        # generate xml scaling settings file for this trial
+        setup_file_path = generate_scale_settings(path, config)
 
     # run solver using settings file
     subprocess.run(['opensim-cmd',

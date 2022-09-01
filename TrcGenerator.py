@@ -18,17 +18,22 @@ for root, dirs, files in os.walk(config.PATH):
         if file.endswith(".c3d"):
             # construct full file path for this file
             temp_path = os.path.join(root, file)
-            
+            print(f"[INFO] - Processing: {temp_path}")
+
             # generate trc file using config settings
-            generate_trc(temp_path, rotate=[config.ROTATE_X, config.ROTATE_Y, config.ROTATE_Z])
-            
+            generate_trc(
+                temp_path, rotate=[config.ROTATE_X, config.ROTATE_Y, config.ROTATE_Z]
+            )
+
             if config.VALIDATE_TRC:
                 # check that resulting trc file is readable
                 try:
                     trc_savepath = temp_path.replace(".c3d", ".trc")
                     validate_trc(trc_savepath)
                 except Exception as e:
-                    print(f"[WARNING] - {trc_savepath} not readable - attempting to replace nans")
+                    print(
+                        f"[WARNING] - {trc_savepath} not readable - attempting to replace nans"
+                    )
                     # read file in as csv and replace nans
                     fix_trc(trc_savepath)
                     # check that we have fixed the nan/0 issue
