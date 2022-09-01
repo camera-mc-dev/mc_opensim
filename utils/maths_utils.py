@@ -1,14 +1,10 @@
-"""osim_utils.py
+"""maths_utils.py
 
 Tools for working with OpenSim in Python
 """
 
-import os
 import math
 import numpy as np
-import lxml.etree as ET
-import subprocess
-import opensim
 
 
 def isRotationMatrix(R: np.array) -> float:
