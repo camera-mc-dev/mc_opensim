@@ -25,7 +25,7 @@ foo@bar:~$ cd mc_opensim
 ```
 
 ```console
-foo@bar:~./mc_opensim$ python3.9 -m venv ./venv
+foo@bar:~./mc_opensim$ python3.9 -m venv ./venv --system-site-packages
 ```
 
 ```console
@@ -36,7 +36,46 @@ foo@bar:~./mc_opensim$ source venv/bin/activate
 (venv) foo@bar:~./mc_opensim$ pip3.9 install -r requirements.txt
 ```
 
-
 ## Usage
 
+**TrcGenerator.py** - Use to convert .c3d files to OpenSim .trc format.
+
+- Update `config.py` by:
+  - Setting `PATH` variable to the absolute path of the .c3d file locations.
+  - Setting other trc settings as desired (details of each setting given in config file).
+
+```console
+(venv) foo@bar:~./mc_opensim$ python3 TrcGenerator.py
+```
+
+**BatchIK.py** - Use to generate scaled osim model and run IK solver on motion files
+
+- Ensure that .trc files have been generated.
+- Update `config.py` by:
+  - Setting `PATH` variable to the absolute path of the .c3d file locations.
+  - Setting other scaling and IK settings as desired (details of each setting given in config file).
+
+```console
+(venv) foo@bar:~./mc_opensim$ python3 BatchIK.py
+```
+
 ## Developer Notes
+
+When running the IK solver, we currently assume the following:
+
+- For markerbased data, we assume that the scaled model (.osim) is located in the same directory as the .trc files.
+- For markerless data, we assume that the scaled model (.osim) is located in the same parent directory as the motion trials e.g.
+
+```console
+session_dir
+│
+└───trial_01
+|   |
+|   └───trial.trc
+└───trial_02
+|   |
+|   └───trial.trc
+└───STATIC_01
+    |
+    └───scaled_static.osim
+```
