@@ -8,7 +8,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from utils.osim_utils import rotationMatrixToEulerAngles
+from utils.maths_utils import rotationMatrixToEulerAngles
 
 
 def process_data(path, markerless=True):

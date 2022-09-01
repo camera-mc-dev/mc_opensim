@@ -12,13 +12,14 @@ import pandas as pd
 import numpy as np
 import opensim
 
-from utils.osim_utils import rotate_data_table, mm_to_m
+from utils.maths_utils import rotate_data_table, mm_to_m
 
 def validate_trc(path: str) -> None:
     trcAdapter.read(savename)
 
 def fix_trc(filename: str, find="nan", replace=0, fix_units=True, unit="mm") -> None:
-    """Attempt to fix 
+    """Attempt to fix unreadable trc file. This is often caused
+       by incorrect unit scaling or having '0' instead of nans
 
     Args:
         filename (str): _description_
