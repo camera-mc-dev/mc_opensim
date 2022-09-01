@@ -137,7 +137,7 @@
 		<!--The desired time range over which inverse kinematics is solved. The closest start and final times from the provided observations are used to specify the actual time range to be processed.-->
 		<time_range> 0 100</time_range>
 		<!--Flag (true or false) indicating whether or not to report marker errors from the inverse kinematics solution.-->
-		<report_errors>true</report_errors>
+		<report_errors>false</report_errors>
 		<!--Name of the resulting inverse kinematics motion (.mot) file.-->
 		<output_motion_file>/home/ln424/Documents/CAMERA/BioCV_Project/markerless_data/2020-02-25-P08/P08_WALK_02/op-fused/joints_kalman.mot</output_motion_file>
 		<!--Flag indicating whether or not to report model marker locations. Note, model marker locations are expressed in Ground.-->

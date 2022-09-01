@@ -5,7 +5,7 @@
 
 # Set path to directory containing data. Data can seperated into 
 # futher subdirectories as all subdirs will be searched recursively.
-PATH = "/home/ln424/Downloads/mc_opensim_test/markers"
+PATH = "/home/ln424/Downloads/mc_opensim_test/markerless"
 
 
 #
@@ -15,7 +15,7 @@ PATH = "/home/ln424/Downloads/mc_opensim_test/markers"
 # Are we working with markerless data i.e. COCO keypoint outputs? If
 # so, set to True. Otherwise if using BioCV markerset based data set
 # to False. Other models will require custom paths settings
-IS_MARKERLESS = False
+IS_MARKERLESS = True
 
 # It is assumed that default .osim, scale settings (.xml) and IK settings
 # (.xml) are stored here for both marker and markerless data. Defaults
@@ -77,7 +77,7 @@ RUN_IK = True
 # Specifies the start and end times for the IK computation. Time 
 # values are in whatever units of time were used in the marker and 
 # coordinate files
-IK_TIME_RANGE = [0, 100]
+IK_TIME_RANGE = [0, 0.1]
 
 # Flag indicating whether or not to report 
 # marker errors from the inverse kinematics solution.
