@@ -72,7 +72,7 @@ def generate_ik_settings(path: str, config: object) -> str:
     # write updated xml to disk
     tree.write(xml_savepath)
     
-    return xml_path
+    return xml_savepath
 
 def generate_scale_settings(path: str, config: object) -> str:
 
