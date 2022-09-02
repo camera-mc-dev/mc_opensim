@@ -8,6 +8,12 @@ A set of scripts to:
 - Convert .c3d data from `mc_reconstruction` to a `OpenSim` compatible format.
 - Batch process .c3d outputs from `mc_reconstruction` outputs through `OpenSim's` IK solver.
 
+Note:
+
+`./isbs21_scripts` contains analysis scripts to produce results and figures for ISBS 2021 abstract.
+
+`./paper2_scripts` contatins analysis scropts to produce results and figures for BioCV Paper 2.
+
 ## Installation
 
 To install on Unbuntu 18.04 LTS:
@@ -43,6 +49,7 @@ foo@bar:~./mc_opensim$ source venv/bin/activate
 - Update `config.py` by:
   - Setting `PATH` variable to the absolute path of the .c3d file locations.
   - Setting other trc settings as desired (details of each setting given in config file).
+- Run:
 
 ```console
 (venv) foo@bar:~./mc_opensim$ python3 TrcGenerator.py
@@ -54,6 +61,8 @@ foo@bar:~./mc_opensim$ source venv/bin/activate
 - Update `config.py` by:
   - Setting `PATH` variable to the absolute path of the .c3d file locations.
   - Setting other scaling and IK settings as desired (details of each setting given in config file).
+  - For fine-grained control of IK settings see `.xml` files in `./configs/`.
+- Run:
 
 ```console
 (venv) foo@bar:~./mc_opensim$ python3 BatchIK.py
