@@ -63,19 +63,28 @@ foo@bar:~./mc_opensim$ source venv/bin/activate
 
 When running the IK solver, we currently assume the following:
 
-- For markerbased data, we assume that the scaled model (.osim) is located in the same directory as the .trc files.
+- For markerbased data, we assume that the scaled model (.osim) is located in the same directory as the .trc files. e.g.
+
+```console
+session_dir
+│
+├──trial_01.trc
+├──trial_02.trc
+└──scaled_static.osim
+```
+
 - For markerless data, we assume that the scaled model (.osim) is located in the same parent directory as the motion trials e.g.
 
 ```console
 session_dir
 │
-└───trial_01
+└──trial_01
 |   |
-|   └───trial.trc
-└───trial_02
+|   └──trial.trc
+└──trial_02
 |   |
-|   └───trial.trc
-└───STATIC_01
+|   └──trial.trc
+└──STATIC_01
     |
-    └───scaled_static.osim
+    └──scaled_static.osim
 ```
