@@ -22,12 +22,15 @@ def _check_for_model(path, model):
     return os.path.isfile(os.path.join(dir, model))
 
 def _find_scaled_model(base_dir: str, ext: str, substr: str) -> str:
+    print( base_dir )
+    print( ext )
+    print( substr )
     for root, dirs, files in os.walk(base_dir):
             for file in files:
-                if substr in file and file.endswith(ext):
+                if substr in root and file.endswith(ext):
                     return os.path.join(root, file)
     
-    raise FileNotFoundError(f"[Error] - Could not locate: {base_dir}")
+    raise FileNotFoundError(f"[Error] - Could not locate: {ext} under {base_dir}")
 
 def generate_ik_settings(path: str, config: object) -> str:
 
@@ -41,7 +44,11 @@ def generate_ik_settings(path: str, config: object) -> str:
     if config.IS_MARKERLESS:
         # To find a markerless model we'll assume that the static and scaled osim
         # files are stored in the same parent dir as this trial.
-        model_file = _find_scaled_model(os.path.dirname(os.path.dirname(path)), "biocv_fullbody_markerless_scaled.osim", config.STATIC_NAME)
+        # we assume that markerless files are in a subdir of the trial dir.
+        subDir    = os.path.dirname(path)
+        trialDir  = os.path.dirname(subDir)
+        sessDir   = os.path.dirname(trialDir)
+        model_file = _find_scaled_model(sessDir, "biocv_fullbody_markerless_scaled.osim", config.STATIC_NAME)
         
     else:
         # if we are dealing with marker based data i.e. from QTM
@@ -124,7 +131,13 @@ def run_osim_tools(path: str, config: object, job="ik") -> None:
         setup_file_path = generate_scale_settings(path, config)
 
     # run solver using settings file
-    subprocess.run(['opensim-cmd',
+    oscmd = 'opensim-cmd'
+    if config.OPENSIM_BINARY_PATH != None:
+        print( config.OPENSIM_BINARY_PATH )
+        oscmd = config.OPENSIM_BINARY_PATH + oscmd
+    
+    x = subprocess.run([oscmd,
                     'run-tool',
                     setup_file_path,
-                    '-o off'])
+                    '-o debug'])
+    print(x)

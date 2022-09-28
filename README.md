@@ -5,8 +5,9 @@
 **Tools for running [mc_reconstruction](https://github.com/camera-mc-dev) outputs through [OpenSim's](https://github.com/opensim-org/opensim-core) IK solver**
 
 A set of scripts to:
-- Convert .c3d data from `mc_reconstruction` to a `OpenSim` compatible format.
-- Batch process .c3d outputs from `mc_reconstruction` outputs through `OpenSim's` IK solver.
+- Fill gaps and smooth the output of a .c3d from `mc_reconstruction`.
+- Batch convert .c3d data from `mc_reconstruction` to an `OpenSim` compatible format.
+- Batch process converted outputs from `mc_reconstruction` outputs through `OpenSim's` IK solver.
 
 Note:
 
@@ -44,10 +45,32 @@ foo@bar:~./mc_opensim$ source venv/bin/activate
 
 ## Usage
 
+**FillSmoothC3D.py** - Use to fill gaps and smooth a .c3d file.
+
+- You can use this in one of two ways:
+  1) Simply pass a list of `.c3d` files to the script on the command line, as well as the noise parameters for the Kalman filter.
+  2) Set the `PATH` variable in the config.py file to the path of the _session_ directory.
+     - the script will search beneath that dir for any .c3d files and try to smooth them.
+     - noise parameters for the Kalman smoother will be taken from the config file.
+     - If one or both of the noise parameters are set negative, then the script will ask PyKalman to estimate suitable parameters.
+     - We use a constant acceleration filter.
+     - increasing the transition noise or the reducing the observation noise allows the state to deviate from that assumption
+     - reducing the transition noise or increasing the observation nose encourages the state to stick to that assumption
+     
+     
+```console
+(venv) foo@bar:~./mc_opensim$ python3 FillSmoothC3D.py False 0.01 15 file00.c3d file01.c3d ... fileNN.c3d
+```
+
+```console
+(venv) foo@bar:~./mc_opensim$ python3 FillSmoothC3D.py True
+```
+
 **TrcGenerator.py** - Use to convert .c3d files to OpenSim .trc format.
 
 - Update `config.py` by:
-  - Setting `PATH` variable to the absolute path of the .c3d file locations.
+  - Setting `PATH` variable to the absolute path of the _session_ directory.
+    - The script will walk through the filesystem looking for .c3d files and converting them.
   - Setting other trc settings as desired (details of each setting given in config file).
 - Run:
 
@@ -59,7 +82,7 @@ foo@bar:~./mc_opensim$ source venv/bin/activate
 
 - Ensure that .trc files have been generated.
 - Update `config.py` by:
-  - Setting `PATH` variable to the absolute path of the .c3d file locations.
+  - Setting `PATH` variable to the absolute path of the _session_ directory.
   - Setting other scaling and IK settings as desired (details of each setting given in config file).
   - For fine-grained control of IK settings see `.xml` files in `./configs/`.
 - Run:

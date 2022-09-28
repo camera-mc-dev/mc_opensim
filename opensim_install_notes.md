@@ -1,4 +1,9 @@
 # OpenSim installation notes (on Ubuntu 18.04)
+
+## Issues at run-time
+
+To avoid problems with "Type 3 (and 7) not supported" when loading `.c3d` files, make sure that you are using OpenSim with a version `> 4.0`
+
 ## Issues during dependency build for OpenSim Core:
 
 If openGL linking issues arises from simbody visualizer, it probably can't find ```libGL.so```

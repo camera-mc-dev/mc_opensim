@@ -13,9 +13,17 @@ for root, dirs, files in os.walk(config.PATH):
     for file in files:
         # If we find a static file we can scale it if the config
         # file specifies this
-        if config.SCALE_MODEL and config.STATIC_NAME in file and file.endswith(".trc"):
+        if config.SCALE_MODEL and config.STATIC_NAME in root and file.endswith(".trc"):
             # construct full file path for this file
             temp_path = os.path.join(root, file)
+            
+            # if the .trc file is called "markers.trc" we will assume is is a markers file,
+            # otherwise, we will assume it was a markerless file.
+            if file == "markers.trc":
+                config.IS_MARKERLESS = False
+            else:
+                config.IS_MARKERLESS = True
+            
             
             print(f"\n[INFO] - Scaling model: {temp_path}\n")
             run_osim_tools(temp_path, config, job="scale")
@@ -26,9 +34,19 @@ for root, dirs, files in os.walk(config.PATH):
     for file in files:
         # If we find a static file we can scale it if the config
         # file specifies this
-        if config.RUN_IK and config.STATIC_NAME not in file and file.endswith(".trc"):
+        if config.RUN_IK and config.STATIC_NAME not in root and file.endswith(".trc"):
             # construct full file path for this file
             temp_path = os.path.join(root, file)
             
+            # if the .trc file is called "markers.trc" we will assume is is a markers file,
+            # otherwise, we will assume it was a markerless file.
+            if file == "markers.trc":
+                config.IS_MARKERLESS = False
+            else:
+                config.IS_MARKERLESS = True
+            
+            
             print(f"\n[INFO] - Running IK solver: {temp_path}\n")
             run_osim_tools(temp_path, config, job="ik")
+            
+            print(f"\n[INFO] - Done (?) IK solver: {temp_path}\n")

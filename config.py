@@ -5,17 +5,23 @@
 
 # Set path to directory containing data. Data can seperated into 
 # futher subdirectories as all subdirs will be searched recursively.
-PATH = "/home/ln424/Downloads/mc_opensim_test/markers"
+PATH = "/data2/bioCV/27/P27_RUN_01/op-recon/"
+#PATH = "/data2/bioCV/27/P27_RUN_01/op-fused/"
+#PATH = "/data2/bioCV/27/P27_RUN_01/"
 
 
 #
 # GENERAL SETTINGS
 #
 
+# Deprecated: The tool now gueses based on filename so that as it walks
+#             through the directories it can choose for each file it finds.
+#             thus, marker files _must_ now be markers.c3d otherwise it 
+#             assumes markerless.
 # Are we working with markerless data i.e. COCO keypoint outputs? If
 # so, set to True. Otherwise if using BioCV markerset based data set
 # to False. Other models will require custom paths settings
-IS_MARKERLESS = False
+# IS_MARKERLESS = True
 
 # It is assumed that default .osim, scale settings (.xml) and IK settings
 # (.xml) are stored here for both marker and markerless data. Defaults
@@ -27,6 +33,24 @@ DEFAULT_MODELS_PATH = "./configs/"
 CUSTOM_MODEL_PATH = None
 CUSTOM_SCALE_SETTINGS_PATH = None
 CUSTOM_IK_SETTINGS_PATH = None
+
+# Where are the opensim binaries (leave as None if installed on your path)
+OPENSIM_BINARY_PATH = "/home/muzz/programming/notmine/opensim/opensim_install/bin/"
+
+
+#
+# Smoothing settings
+#
+# Previous work has used 0.01 and 15 for trans and obs respectively.
+# But we can ask PyKalman to estimate suitable parameters. To do that
+# set these to < 0
+#
+
+KALMAN_TRANS_NOISE = -1.0
+KALMAN_OBS_NOISE   = -1.0
+
+
+
 
 
 #
@@ -77,7 +101,7 @@ RUN_IK = True
 # Specifies the start and end times for the IK computation. Time 
 # values are in whatever units of time were used in the marker and 
 # coordinate files
-IK_TIME_RANGE = [0, 0.2]
+IK_TIME_RANGE = [0, 5.0]
 
 # Flag indicating whether or not to report 
 # marker errors from the inverse kinematics solution.
