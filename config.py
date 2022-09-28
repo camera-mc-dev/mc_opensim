@@ -62,14 +62,14 @@ KALMAN_OBS_NOISE   = -1.0
 # processing time.
 VALIDATE_TRC = True
 
-# During .trc generation we can apply a rotation to the coordinate
-# global coordinate system if needed. OpenSim expects the y-axis to
-# be normal to the x-z ground plane. If no rotation is needed set 
-# each rotation var to 0.
-# The rotation in degree to be applied to each axis.
+# Here in CAMERA we like to use z-up and and x-y ground plane.
+# However, OpenSim is one of those weirdos that like to use
+# y-up and an x-z ground plane, and thus the IK solver expects that.
+# So _we_ apply a -90 degree rotation when converting our .c3d to .trc
+# You, of course, may want to do something different.
 ROTATE_X = -90
 ROTATE_Y = 0
-ROTATE_Z = -90
+ROTATE_Z = 0
 
 
 #
