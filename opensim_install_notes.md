@@ -2,7 +2,7 @@
 
 ## Issues at run-time
 
-To avoid problems with "Type 3 (and 7) not supported" when loading `.c3d` files, make sure that you are using OpenSim with a version `> 4.0`
+To avoid problems with "Type 3 (and 7) not supported" when loading `.c3d` files, make sure that you are using EZC3D with a version `>= 1.3.8`. Note that if you go _too_ new, then OpenSim (up to 4.4) won't build - so pick your versions with care.
 
 ## Issues during dependency build for OpenSim Core:
 
