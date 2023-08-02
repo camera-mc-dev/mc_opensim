@@ -17,9 +17,15 @@ Note:
 
 ## Installation
 
-To install on Unbuntu 18.04 LTS:
+1) Get hold of and compile [OpenSim](https://github.com/opensim-org/opensim-core). OpenSim provide an install script - we have included a modified copy of the install script in `mc_opensim/opensim-core-linux-build-script.sh` which you may find convenent. The modifications allow you to build and install OpenSim somewhere _other_ than you're home directory. After OpenSim has build, remember to install the python modules. For example:
 
-1) Compile OpenSim from source using instruction [here](https://github.com/opensim-org/opensim-core#on-ubuntu-using-unix-makefiles). Make sure that you point CMake towards the python install that will use to create your venv in the next steps. Additional notes on some of the issues I encountered while compiling can be found [here](./opensim_install_notes.md)...good luck!
+```bash
+bash opensim-core-linux-build-script.sh -p /opt/opensim
+cd /opt/opensim/install/sdk/Python
+sudo python setup.py install
+```
+
+You can then test with `python3 -m opensim`
 
 2) Once OpenSim is playing ball, clone the repository from [camera-mc-dev](https://github.com/camera-mc-dev):
 
@@ -32,7 +38,7 @@ foo@bar:~$ cd mc_opensim
 ```
 
 ```console
-foo@bar:~./mc_opensim$ python3.9 -m venv ./venv --system-site-packages
+foo@bar:~./mc_opensim$ python3 -m venv ./venv --system-site-packages
 ```
 
 ```console
@@ -40,7 +46,8 @@ foo@bar:~./mc_opensim$ source venv/bin/activate
 ```
 
 ```console
-(venv) foo@bar:~./mc_opensim$ pip3.9 install -r requirements.txt
+(venv) foo@bar:~./mc_opensim$ python3 -m pip install update pip
+(venv) foo@bar:~./mc_opensim$ python3 -m pip install -r requirements.txt
 ```
 
 ## Usage
